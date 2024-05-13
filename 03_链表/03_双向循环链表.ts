@@ -1,8 +1,7 @@
-
 import { DoublyLinkedNode } from "./node";
 import { ILinkedListType } from "./types";
 
-class DoublyLinkedList<T> implements ILinkedListType<T, DoublyLinkedNode<T>> {
+class CircularDoublyLinkedList<T> implements ILinkedListType<T, DoublyLinkedNode<T>> {
 
   private head: DoublyLinkedNode<T> | null
   private tail: DoublyLinkedNode<T> | null
@@ -21,10 +20,16 @@ class DoublyLinkedList<T> implements ILinkedListType<T, DoublyLinkedNode<T>> {
       this.head = node
       this.tail = node
     } else {
+
       this.tail!.next = node
       node.pre = this.tail
       this.tail = node
+
+
     }
+    this.tail.next = this.head
+    this.head.pre = this.tail
+
 
     this.count++
   }
@@ -39,6 +44,7 @@ class DoublyLinkedList<T> implements ILinkedListType<T, DoublyLinkedNode<T>> {
       if (this.head === null) {
         this.head = node
         this.tail = node
+
       } else {
         node.next = this.head
         current.pre = node
@@ -61,6 +67,9 @@ class DoublyLinkedList<T> implements ILinkedListType<T, DoublyLinkedNode<T>> {
 
     }
 
+    this.tail!.next = this.head
+    this.head!.pre = this.tail
+
     this.count++
 
     return true
@@ -69,7 +78,7 @@ class DoublyLinkedList<T> implements ILinkedListType<T, DoublyLinkedNode<T>> {
 
   removeAt(position: number): T | undefined {
     if (position < 0 || position >= this.count) return undefined
-    
+
     let current = this.head!
 
     if (position === 0) {
@@ -79,6 +88,9 @@ class DoublyLinkedList<T> implements ILinkedListType<T, DoublyLinkedNode<T>> {
         this.tail = null
       } else {
         this.head!.pre = null
+
+        this.tail!.next = this.head
+        this.head!.pre = this.tail
       }
     } else if (position === this.count - 1) {
       current = this.tail!
@@ -86,6 +98,10 @@ class DoublyLinkedList<T> implements ILinkedListType<T, DoublyLinkedNode<T>> {
 
       pre.next = null
       this.tail = pre
+
+      this.tail!.next = this.head
+      this.head!.pre = this.tail
+
     } else {
       current = this.getElementAt(position)!
 
@@ -139,9 +155,9 @@ class DoublyLinkedList<T> implements ILinkedListType<T, DoublyLinkedNode<T>> {
     let str = `${this.head.element}`
     let current = this.head.next
 
-    while (current !== null) {
-      str += `，${current.element}`
-      current = current.next
+    for (let i = 1; i < this.count && current !== null && current !== this.head; i++) {
+      str += `, ${current.element}`;
+      current = current.next;
     }
 
     return str
@@ -167,52 +183,41 @@ class DoublyLinkedList<T> implements ILinkedListType<T, DoublyLinkedNode<T>> {
 
 }
 
-// 创建一个链表实例
-const linkedList = new DoublyLinkedList<number>();
+// 创建一个循环双向链表实例
+const list = new CircularDoublyLinkedList<number>();
 
-// 向链表中添加元素
-linkedList.push(10); // 预期: "10"
-linkedList.push(20);
-linkedList.push(30); // 预期: "10,20,30"
+// 测试 push 方法
+console.log("Push elements to the list:");
+list.push(1);
+list.push(2);
+list.push(3);
+console.log("List after push:", list.toString()); // 预期结果: "1,2,3"
 
-// 打印链表
-console.log(linkedList.toString()); // 预期: "10,20,30"
+// 测试 insert 方法
+console.log("\nInsert element 0 at position 0:");
+list.insert(0, 0);
+console.log("List after insert:", list.toString()); // 预期结果: "0,1,2,3"
 
-// 在链表中插入元素
-linkedList.insert(5, 1); // 在索引1的位置插入5，预期: "10,5,20,30"
-linkedList.insert(25, 4); // 在索引4的位置插入25，预期: "10,5,20,30,25"
+// 测试 removeAt 方法
+console.log("\nRemove element at position 1:");
+const removedElement = list.removeAt(1);
+console.log("Removed element:", removedElement); // 预期结果: 1
+console.log("List after removeAt:", list.toString()); // 预期结果: "0,2,3"
 
-// 打印链表
-console.log(linkedList.toString()); // 预期: "10,5,20,30,25"
+// 测试 size 和 isEmpty 方法
+console.log("\nList size:", list.size()); // 预期结果: 3
+console.log("Is list empty:", list.isEmpty()); // 预期结果: false
 
-// 从链表中移除元素
-console.log(linkedList.removeAt(2)); // 移除索引2的元素，预期返回20
-console.log(linkedList.toString()); // 预期: "10,5,30,25"
+// 测试 getHead 方法
+console.log("\nHead element:", list.getHead()?.element ?? "List is empty"); // 预期结果: 0
 
-// 移除特定值的元素
-linkedList.remove(30); // 移除值为30的元素
-console.log(linkedList.toString()); // 预期: "10,5,25"
+// 测试 indexOf 方法
+console.log("\nIndex of element 2:", list.indexOf(2)); // 预期结果: 1
 
-// 获取链表头部元素
-console.log(linkedList.getHead()?.element ?? "List is empty"); // 预期: 10
+// 测试 remove 方法
+console.log("\nRemove element 3:");
+list.remove(3);
+console.log("List after remove:", list.toString()); // 预期结果: "0,2"
 
-// 检查链表是否为空
-console.log(linkedList.isEmpty()); // 预期: false
-
-// 获取链表大小
-console.log(linkedList.size()); // 预期: 3
-
-// 将链表转换为字符串
-console.log(linkedList.toString()); // 预期: "10,5,25"
-
-// 获取链表中特定位置的元素索引
-console.log(linkedList.indexOf(25)); // 预期: 2
-console.log(linkedList.indexOf(30)); // 预期: -1 （因为30已被移除）
-
-// 获取特定索引位置的元素
-console.log(linkedList.getElementAt(1)?.element ?? "Index out of bounds"); // 预期: 5
-console.log(linkedList.getElementAt(5) ? "Index out of bounds" : "List is empty or index out of bounds"); // 预期: "Index out of bounds"
-
-export {
-  DoublyLinkedList
-}
+// 测试 toString 方法的循环性
+console.log("\nList as string:", list.toString()); // 预期结果: "0,2"（注意，由于之前删除了元素，链表不再循环回到0）

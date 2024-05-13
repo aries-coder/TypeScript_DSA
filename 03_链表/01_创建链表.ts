@@ -25,11 +25,11 @@ class LinkedList<T> implements ILinkedListType<T> {
     }
 
     this.count++
-    
+
   }
 
   insert(element: T, position: number): boolean {
-    if (position < 0 || position > this.count)  return false
+    if (position < 0 || position > this.count) return false
 
     const node = new LinkedNode<T>(element)
     if (position === 0) {
@@ -54,7 +54,7 @@ class LinkedList<T> implements ILinkedListType<T> {
 
     if (position === 0) {
       this.head = current.next
-  
+
     } else {
       const pre = this.getElementAt(position - 1)!
       current = pre.next!
@@ -124,7 +124,12 @@ class LinkedList<T> implements ILinkedListType<T> {
 
   }
 
-  
+  clear(): void {
+    this.count = 0
+    this.head = null
+  }
+
+
 
 }
 

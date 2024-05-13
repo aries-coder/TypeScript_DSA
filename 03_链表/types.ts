@@ -13,5 +13,5 @@ export interface ILinkedListType<T, LinkedNodeType = LinkedNode<T>> {
   size(): number
   toString(): string
   getElementAt(index: number): LinkedNodeType | undefined
-  
+  clear(): void
 }
