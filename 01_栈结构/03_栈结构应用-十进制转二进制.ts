@@ -8,7 +8,7 @@ function dexToBin(num: number) {
     num = Math.floor(num / 2)
   }
 
-  while (stack.size()) {
+  while (stack.size) {
     console.log(stack.pop())
   }
 }

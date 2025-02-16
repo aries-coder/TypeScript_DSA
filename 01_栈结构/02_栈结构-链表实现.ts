@@ -14,7 +14,7 @@ class LinkedStack<T = any> implements Istack<T> {
   isEmpty(): boolean {
     throw new Error('Method not implemented.')
   }
-  size(): number {
+  get size(): number {
     throw new Error('Method not implemented.')
   }
 }
